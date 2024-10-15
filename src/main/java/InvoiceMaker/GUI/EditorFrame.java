@@ -9,6 +9,8 @@ import org.apache.pdfbox.rendering.PDFRenderer;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -103,6 +105,12 @@ public class EditorFrame extends JFrame {
             add(signaturePanel);
 
             JButton saveBtn = new JButton("Speichern");
+            saveBtn.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    InvoiceGenerator.generateFinal(InvoicePanel.eb);
+                }
+            });
             add(saveBtn);
 
             JButton printBtn = new JButton("Drucken");
@@ -112,9 +120,11 @@ public class EditorFrame extends JFrame {
     }
 
     private class InvoicePanel extends JPanel {
+        static Einsatzbestaetigung eb;
+
         private InvoicePanel(File deploymentConfirmationPDF) throws IOException {
             try {
-                Einsatzbestaetigung eb = EinsatzbestaetigungBuilder.build(deploymentConfirmationPDF);
+                eb = EinsatzbestaetigungBuilder.build(deploymentConfirmationPDF);
                 String filepath = InvoiceGenerator.generate(eb);
                 File file = new File(filepath);
                 PDDocument doc = Loader.loadPDF(file);
@@ -125,7 +135,6 @@ public class EditorFrame extends JFrame {
 
             } catch (IOException e) {
                 e.printStackTrace();
-
             }
         }
     }
