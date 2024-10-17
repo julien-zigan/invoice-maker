@@ -179,7 +179,7 @@ public class InvoiceGenerator {
 
             contentStream.setFont(new PDType1Font((Standard14Fonts.FontName.HELVETICA)), 10);
             contentStream.newLineAtOffset(page.getMediaBox().getWidth() / 1000 * 334,  0);
-            contentStream.showText("Pauschaul");
+            contentStream.showText("Pauschal");
 
             contentStream.newLineAtOffset(page.getMediaBox().getWidth() / 1000 * 180,  0);
             contentStream.showText("      10,00");
@@ -229,6 +229,25 @@ public class InvoiceGenerator {
             contentStream.newLineAtOffset(page.getMediaBox().getWidth() / 1000 * 120, page.getMediaBox().getHeight() / 1000 * 268);
             contentStream.showText("__________________________________________________________________________________");
             contentStream.endText();
+
+
+            contentStream.beginText();
+            contentStream.setNonStrokingColor(0f,0f,0f);
+            contentStream.setFont(new PDType1Font((Standard14Fonts.FontName.HELVETICA)), 10);
+            contentStream.newLineAtOffset(page.getMediaBox().getWidth() / 1000 * 120, page.getMediaBox().getHeight() / 1000 * 231);
+            contentStream.showText("Zahlung bitte innerhalb von 14 Tagen an die folgende Bankverbindung:");
+            contentStream.newLineAtOffset(page.getMediaBox().getWidth() / 1000 * 72, -(page.getMediaBox().getHeight() / 1000 * 20));
+            contentStream.showText("Berliner Sparkasse");
+            contentStream.newLineAtOffset(0, -(page.getMediaBox().getHeight() / 1000 * 15));
+            contentStream.showText("IBAN: DE21100500001070507390");
+            contentStream.newLineAtOffset(0, -(page.getMediaBox().getHeight() / 1000 * 15));
+            contentStream.showText("BIC: BELADEBEXXX");
+            contentStream.newLineAtOffset(0, -(page.getMediaBox().getHeight() / 1000 * 15));
+            contentStream.showText("Kto. Inh: Anita Pacholik-Zuromska");
+            contentStream.newLineAtOffset(-(page.getMediaBox().getWidth() / 1000 * 72), -(page.getMediaBox().getHeight() / 1000 * 30));
+            contentStream.showText("Mit freundlichen Grüßen");
+            contentStream.endText();
+
 
 
             contentStream.close();
