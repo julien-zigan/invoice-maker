@@ -7,53 +7,31 @@ import org.apache.pdfbox.pdmodel.common.PDRectangle;
 import org.apache.pdfbox.pdmodel.font.PDType1Font;
 import org.apache.pdfbox.pdmodel.font.Standard14Fonts;
 import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
-
 import java.awt.*;
 import java.io.File;
-
-//TODO:
-// Layout in Blöcken relativ zueinander organisieren
-// Blöcke von Funktionen schreiben lassen
-// Parameter einrichten, die die Blöcke positionieren
-
-
-
-//TODO:
-// Informationen in Einsatzbestätigung in Blöcken atomisieren
-// extraktion/insertion implementieren
-//
+import java.io.IOException;
 
 
 public class InvoiceGenerator {
-    public static String generate(Einsatzbestaetigung einsatzbestaetigung) {
-        String filepath = "";
+    static String filepath = "";
+    static PDDocument document;
+    static final float WIDTH = 595.27563f;
+    static PDPage page;
+    static PDPageContentStream contentStream;
 
-        try (PDDocument document = new PDDocument()) {
+    public static String generate(Einsatzbestaetigung einsatzbestaetigung /*User w/ credentials incl. logo */) {
 
-
-            //TODO/////
-            // float pagewidth = page.getMediaBox().getWidth();
-            //    float text_width = (font.getStringWidth(text) / 1000.0f) * size;
-            //    float x = pagewidth - ((paddingRight * 2) + text_width);
-            //    contentStream.newLineAtOffset(x, 0);
-            //    contentStream.setFont(font, size);
-            //    contentStream.showText(text);
-            //    contentStream.newLineAtOffset(-x, 0);
-
-            //Seite initialisieren, contenstream öffnen
-            PDPage page = new PDPage(PDRectangle.A4);
-            document.addPage(page);
-            PDPageContentStream contentStream = new PDPageContentStream(document, page);
-
-            // logo
-            PDImageXObject pdImage = PDImageXObject.createFromFile("X:\\invoice-maker\\src\\main\\resources\\logo1.PNG", document);
-            contentStream.drawImage(pdImage, 380, 715);
+        try {
+            setUpDocument();
+            addLogo("X:\\invoice-maker\\src\\main\\resources\\logo1.PNG"/*replace when user class exists*/,
+                    new Point(380, 715));
+           // addSender()
 
         //Adressfeld
             contentStream.beginText();
 
             //Absender
-            contentStream.newLineAtOffset(page.getMediaBox().getWidth() / 1000 * 120, page.getMediaBox().getHeight() / 1000 * 806);
+            contentStream.newLineAtOffset(71.5f, page.getMediaBox().getHeight() / 1000 * 806);
             contentStream.setFont(new PDType1Font(Standard14Fonts.FontName.HELVETICA), 8);
             contentStream.showText("Anita Pacholik-Zuromska | Friedrich-Wilhelm-Str. 46A | 12103 Berlin");
 
@@ -85,7 +63,7 @@ public class InvoiceGenerator {
             contentStream.beginText();
             contentStream.setFont(new PDType1Font((Standard14Fonts.FontName.HELVETICA_BOLD)), 10);
 
-            contentStream.newLineAtOffset(page.getMediaBox().getWidth() / 1000 * 585,  page.getMediaBox().getHeight() / 1000 * 672);
+            contentStream.newLineAtOffset(WIDTH / 1000 * 585,  page.getMediaBox().getHeight() / 1000 * 672);
             contentStream.showText("Leistungsdatum");
 
             contentStream.setFont(new PDType1Font((Standard14Fonts.FontName.HELVETICA)), 9);
@@ -98,7 +76,7 @@ public class InvoiceGenerator {
             contentStream.beginText();
             contentStream.setFont(new PDType1Font((Standard14Fonts.FontName.HELVETICA_BOLD)), 10);
 
-            contentStream.newLineAtOffset(page.getMediaBox().getWidth() / 1000 * 744,  page.getMediaBox().getHeight() / 1000 * 672);
+            contentStream.newLineAtOffset(WIDTH / 1000 * 744,  page.getMediaBox().getHeight() / 1000 * 672);
             contentStream.showText("Rechnungsdatum");
 
             contentStream.setFont(new PDType1Font((Standard14Fonts.FontName.HELVETICA)), 9);
@@ -112,7 +90,7 @@ public class InvoiceGenerator {
             contentStream.beginText();
 
             contentStream.setFont(new PDType1Font((Standard14Fonts.FontName.HELVETICA_BOLD)), 20);
-            contentStream.newLineAtOffset(page.getMediaBox().getWidth() / 1000 * 120,  page.getMediaBox().getHeight() / 1000 * 591);
+            contentStream.newLineAtOffset(WIDTH / 1000 * 120,  page.getMediaBox().getHeight() / 1000 * 591);
             contentStream.showText("Rechnung Nr. 12345");
 
             contentStream.setFont(new PDType1Font((Standard14Fonts.FontName.HELVETICA)), 10);
@@ -126,56 +104,56 @@ public class InvoiceGenerator {
 
 //HorizontalLine
             contentStream.beginText();
-            contentStream.newLineAtOffset(page.getMediaBox().getWidth() / 1000 * 120,  page.getMediaBox().getHeight() / 1000 * 522);
+            contentStream.newLineAtOffset(WIDTH / 1000 * 120,  page.getMediaBox().getHeight() / 1000 * 522);
             contentStream.showText("__________________________________________________________________________________");
             contentStream.endText();
 
             contentStream.beginText();
             contentStream.setFont(new PDType1Font((Standard14Fonts.FontName.HELVETICA_BOLD)), 10);
-            contentStream.newLineAtOffset(page.getMediaBox().getWidth() / 1000 * 120,  page.getMediaBox().getHeight() / 1000 * 500);
+            contentStream.newLineAtOffset(WIDTH / 1000 * 120,  page.getMediaBox().getHeight() / 1000 * 500);
             contentStream.showText("Pos.");
 
-            contentStream.newLineAtOffset(page.getMediaBox().getWidth() / 1000 * 72,  0);
+            contentStream.newLineAtOffset(WIDTH / 1000 * 72,  0);
             contentStream.showText("Bezeichnung");
 
-            contentStream.newLineAtOffset(page.getMediaBox().getWidth() / 1000 * 334,  0);
+            contentStream.newLineAtOffset(WIDTH / 1000 * 334,  0);
             contentStream.showText("Menge");
 
-            contentStream.newLineAtOffset(page.getMediaBox().getWidth() / 1000 * 180,  0);
+            contentStream.newLineAtOffset(WIDTH / 1000 * 180,  0);
             contentStream.showText("Einzel (€)");
 
-            contentStream.newLineAtOffset(page.getMediaBox().getWidth() / 1000 * 93,  0);
+            contentStream.newLineAtOffset(WIDTH / 1000 * 93,  0);
             contentStream.showText("Gesamt (€)");
 
             contentStream.endText();
 
             //HorizontalLine
             contentStream.beginText();
-            contentStream.newLineAtOffset(page.getMediaBox().getWidth() / 1000 * 120,  page.getMediaBox().getHeight() / 1000 * 485);
+            contentStream.newLineAtOffset(WIDTH / 1000 * 120,  page.getMediaBox().getHeight() / 1000 * 485);
             contentStream.showText("__________________________________________________________________________________");
             contentStream.endText();
 
             //einzelpositionen
             contentStream.beginText();
             contentStream.setFont(new PDType1Font((Standard14Fonts.FontName.HELVETICA)), 10);
-            contentStream.newLineAtOffset(page.getMediaBox().getWidth() / 1000 * 120,  page.getMediaBox().getHeight() / 1000 * 460);
+            contentStream.newLineAtOffset(WIDTH / 1000 * 120,  page.getMediaBox().getHeight() / 1000 * 460);
             contentStream.showText("1");
 
             contentStream.setFont(new PDType1Font((Standard14Fonts.FontName.HELVETICA_BOLD)), 10);
-            contentStream.newLineAtOffset(page.getMediaBox().getWidth() / 1000 * 72,  0);
+            contentStream.newLineAtOffset(WIDTH / 1000 * 72,  0);
             contentStream.showText("Dolmetschen");
 
             contentStream.setFont(new PDType1Font((Standard14Fonts.FontName.HELVETICA)), 10);
-            contentStream.newLineAtOffset(page.getMediaBox().getWidth() / 1000 * 334,  0);
+            contentStream.newLineAtOffset(WIDTH / 1000 * 334,  0);
             contentStream.showText("1 Stunde");
 
-            contentStream.newLineAtOffset(page.getMediaBox().getWidth() / 1000 * 180,  0);
+            contentStream.newLineAtOffset(WIDTH / 1000 * 180,  0);
             contentStream.showText("      50,00");
 
-            contentStream.newLineAtOffset(page.getMediaBox().getWidth() / 1000 * 93,  0);
+            contentStream.newLineAtOffset(WIDTH / 1000 * 93,  0);
             contentStream.showText("       50,00");
 
-            contentStream.newLineAtOffset(-(page.getMediaBox().getWidth() / 1000 * 607),  -(page.getMediaBox().getHeight() / 1000 * 14));
+            contentStream.newLineAtOffset(-(WIDTH / 1000 * 607),  -(page.getMediaBox().getHeight() / 1000 * 14));
             contentStream.showText("Deutsch-Polnisch / Polnisch-Deutsch");
 
             contentStream.endText();
@@ -183,21 +161,21 @@ public class InvoiceGenerator {
 
             contentStream.beginText();
             contentStream.setFont(new PDType1Font((Standard14Fonts.FontName.HELVETICA)), 10);
-            contentStream.newLineAtOffset(page.getMediaBox().getWidth() / 1000 * 120,  page.getMediaBox().getHeight() / 1000 * 421);
+            contentStream.newLineAtOffset(WIDTH / 1000 * 120,  page.getMediaBox().getHeight() / 1000 * 421);
             contentStream.showText("2");
 
             contentStream.setFont(new PDType1Font((Standard14Fonts.FontName.HELVETICA_BOLD)), 10);
-            contentStream.newLineAtOffset(page.getMediaBox().getWidth() / 1000 * 72,  0);
+            contentStream.newLineAtOffset(WIDTH / 1000 * 72,  0);
             contentStream.showText("Anfahrt");
 
             contentStream.setFont(new PDType1Font((Standard14Fonts.FontName.HELVETICA)), 10);
-            contentStream.newLineAtOffset(page.getMediaBox().getWidth() / 1000 * 334,  0);
+            contentStream.newLineAtOffset(WIDTH / 1000 * 334,  0);
             contentStream.showText("Pauschal");
 
-            contentStream.newLineAtOffset(page.getMediaBox().getWidth() / 1000 * 180,  0);
+            contentStream.newLineAtOffset(WIDTH / 1000 * 180,  0);
             contentStream.showText("      10,00");
 
-            contentStream.newLineAtOffset(page.getMediaBox().getWidth() / 1000 * 93,  0);
+            contentStream.newLineAtOffset(WIDTH / 1000 * 93,  0);
             contentStream.showText("       10,00");
 
             contentStream.endText();
@@ -205,20 +183,20 @@ public class InvoiceGenerator {
             // Summe Netto
             contentStream.beginText();
             contentStream.setFont(new PDType1Font((Standard14Fonts.FontName.HELVETICA)), 10);
-            contentStream.newLineAtOffset(page.getMediaBox().getWidth() / 1000 * 672, page.getMediaBox().getHeight() / 1000 * 364);
+            contentStream.newLineAtOffset(WIDTH / 1000 * 672, page.getMediaBox().getHeight() / 1000 * 364);
             contentStream.showText("Summe Netto");
 
-            contentStream.newLineAtOffset(page.getMediaBox().getWidth() / 1000 * 168, 0);
+            contentStream.newLineAtOffset(WIDTH / 1000 * 168, 0);
             contentStream.showText("€ 60,00");
             contentStream.endText();
 
             contentStream.beginText();
-            contentStream.newLineAtOffset(page.getMediaBox().getWidth() / 1000 * 120,  page.getMediaBox().getHeight() / 1000 * 345);
+            contentStream.newLineAtOffset(WIDTH / 1000 * 120,  page.getMediaBox().getHeight() / 1000 * 345);
             contentStream.showText("__________________________________________________________________________________");
             contentStream.endText();
 
             contentStream.beginText();
-            contentStream.newLineAtOffset(page.getMediaBox().getWidth() / 1000 * 120,  page.getMediaBox().getHeight() / 1000 * 323);
+            contentStream.newLineAtOffset(WIDTH / 1000 * 120,  page.getMediaBox().getHeight() / 1000 * 323);
             contentStream.showText("Gemäß §19 Abs. 1 UstG wird keine Umsatzsteuer ausgewiesen     € 0");
             contentStream.endText();
 
@@ -226,20 +204,20 @@ public class InvoiceGenerator {
             contentStream.beginText();
             contentStream.setFont(new PDType1Font((Standard14Fonts.FontName.HELVETICA_BOLD)), 10);
 
-            contentStream.newLineAtOffset(page.getMediaBox().getWidth() / 1000 * 120,  page.getMediaBox().getHeight() / 1000 * 308);
+            contentStream.newLineAtOffset(WIDTH / 1000 * 120,  page.getMediaBox().getHeight() / 1000 * 308);
             contentStream.showText("__________________________________________________________________________________");
             contentStream.endText();
 
             contentStream.beginText();
             contentStream.setFont(new PDType1Font((Standard14Fonts.FontName.HELVETICA_BOLD)), 10);
-            contentStream.newLineAtOffset(page.getMediaBox().getWidth() / 1000 * 672, page.getMediaBox().getHeight() / 1000 * 286);
+            contentStream.newLineAtOffset(WIDTH / 1000 * 672, page.getMediaBox().getHeight() / 1000 * 286);
             contentStream.showText("Rechnungsbetrag € 60");
             contentStream.endText();
 
             contentStream.beginText();
             contentStream.setNonStrokingColor(0.7f,0.7f,0.7f);
             contentStream.setFont(new PDType1Font((Standard14Fonts.FontName.HELVETICA)), 10);
-            contentStream.newLineAtOffset(page.getMediaBox().getWidth() / 1000 * 120, page.getMediaBox().getHeight() / 1000 * 268);
+            contentStream.newLineAtOffset(WIDTH / 1000 * 120, page.getMediaBox().getHeight() / 1000 * 268);
             contentStream.showText("__________________________________________________________________________________");
             contentStream.endText();
 
@@ -247,9 +225,9 @@ public class InvoiceGenerator {
             contentStream.beginText();
             contentStream.setNonStrokingColor(0f,0f,0f);
             contentStream.setFont(new PDType1Font((Standard14Fonts.FontName.HELVETICA)), 10);
-            contentStream.newLineAtOffset(page.getMediaBox().getWidth() / 1000 * 120, page.getMediaBox().getHeight() / 1000 * 231);
+            contentStream.newLineAtOffset(WIDTH / 1000 * 120, page.getMediaBox().getHeight() / 1000 * 231);
             contentStream.showText("Zahlung bitte innerhalb von 14 Tagen an die folgende Bankverbindung:");
-            contentStream.newLineAtOffset(page.getMediaBox().getWidth() / 1000 * 72, -(page.getMediaBox().getHeight() / 1000 * 20));
+            contentStream.newLineAtOffset(WIDTH / 1000 * 72, -(page.getMediaBox().getHeight() / 1000 * 20));
             contentStream.showText("Berliner Sparkasse");
             contentStream.newLineAtOffset(0, -(page.getMediaBox().getHeight() / 1000 * 15));
             contentStream.showText("IBAN: DE21100500001070507390");
@@ -257,7 +235,7 @@ public class InvoiceGenerator {
             contentStream.showText("BIC: BELADEBEXXX");
             contentStream.newLineAtOffset(0, -(page.getMediaBox().getHeight() / 1000 * 15));
             contentStream.showText("Kto. Inh: Anita Pacholik-Zuromska");
-            contentStream.newLineAtOffset(-(page.getMediaBox().getWidth() / 1000 * 72), -(page.getMediaBox().getHeight() / 1000 * 30));
+            contentStream.newLineAtOffset(-(WIDTH / 1000 * 72), -(page.getMediaBox().getHeight() / 1000 * 30));
             contentStream.showText("Mit freundlichen Grüßen");
             contentStream.endText();
 
@@ -289,4 +267,29 @@ public class InvoiceGenerator {
         }
     }
 
+    private static void setUpDocument() throws IOException {
+        document = new PDDocument();
+        page = new PDPage(PDRectangle.A4);
+        document.addPage(page);
+        contentStream = new PDPageContentStream(document, page);
+    }
+
+    private static void addLogo(String filepath, Point position) throws IOException {
+        PDImageXObject pdImage = PDImageXObject.createFromFile(filepath, document);
+        contentStream.drawImage(pdImage, position.x, position.y);
+    }
+
 }
+
+
+//TODO/////
+// float pagewidth = paOge.getMediaBox().getWidth();
+//    float text_width = (font.getStringWidth(text) / 1000.0f) * size;
+//    float x = pagewidth - ((paddingRight * 2) + text_width);
+//    contentStream.newLineAtOffset(x, 0);
+//    contentStream.setFont(font, size);
+//    contentStream.showText(text);
+//    contentStream.newLineAtOffset(-x, 0);
+// Document WIDTH: 595.27563
+// Document height: 841.8898
+
