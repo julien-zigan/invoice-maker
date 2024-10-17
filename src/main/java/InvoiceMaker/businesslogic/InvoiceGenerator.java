@@ -42,7 +42,7 @@ public class InvoiceGenerator {
             contentStream.beginText();
 
             //Absender
-            contentStream.newLineAtOffset(page.getMediaBox().getWidth() / 100 * 12, page.getMediaBox().getHeight() / 1000 * 806);
+            contentStream.newLineAtOffset(page.getMediaBox().getWidth() / 1000 * 120, page.getMediaBox().getHeight() / 1000 * 806);
             contentStream.setFont(new PDType1Font(Standard14Fonts.FontName.HELVETICA), 8);
             contentStream.showText("Anita Pacholik-Zuromska | Friedrich-Wilhelm-Str. 46A | 12103 Berlin");
 
@@ -99,7 +99,14 @@ public class InvoiceGenerator {
             contentStream.endText();
 
 
+        //Rechnung Heading
+            contentStream.beginText();
+            contentStream.setFont(new PDType1Font((Standard14Fonts.FontName.HELVETICA_BOLD)), 20);
 
+            contentStream.newLineAtOffset(page.getMediaBox().getWidth() / 1000 * 120,  page.getMediaBox().getHeight() / 1000 * 591);
+            contentStream.showText("Rechnung Nr. 12345");
+
+            contentStream.endText();
 
 
         //Referenzzeile data
