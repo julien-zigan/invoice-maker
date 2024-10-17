@@ -11,6 +11,19 @@ import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
 import java.awt.*;
 import java.io.File;
 
+//TODO:
+// Layout in Blöcken relativ zueinander organisieren
+// Blöcke von Funktionen schreiben lassen
+// Parameter einrichten, die die Blöcke positionieren
+
+
+
+//TODO:
+// Informationen in Einsatzbestätigung in Blöcken atomisieren
+// extraktion/insertion implementieren
+//
+
+
 public class InvoiceGenerator {
     public static String generate(Einsatzbestaetigung einsatzbestaetigung) {
         String filepath = "";
