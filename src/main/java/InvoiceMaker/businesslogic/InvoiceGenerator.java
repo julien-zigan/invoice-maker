@@ -17,26 +17,14 @@ public class InvoiceGenerator {
 
         try (PDDocument document = new PDDocument()) {
 
-
-            //TODO////////////////
-            //You are starting at (0,0) after calling contents.beginText();
-            // . Thus if you want to work with absolute positions only, then put only one (absolute) positioning in a contents.beginText();
-            // … contents.endText(); segment.
-            //TODO////////////////
-
-
             //Seite initialisieren, contenstream öffnen
             PDPage page = new PDPage(PDRectangle.A4);
             document.addPage(page);
             PDPageContentStream contentStream = new PDPageContentStream(document, page);
 
-
             // logo
             PDImageXObject pdImage = PDImageXObject.createFromFile("X:\\invoice-maker\\src\\main\\resources\\logo1.PNG", document);
             contentStream.drawImage(pdImage, 380, 715);
-
-
-
 
         //Adressfeld
             contentStream.beginText();
@@ -69,8 +57,6 @@ public class InvoiceGenerator {
 
             contentStream.endText();
 
-
-
         //Referenzzeile
             //Leistungsdatum
             contentStream.beginText();
@@ -101,27 +87,35 @@ public class InvoiceGenerator {
 
         //Rechnung Heading
             contentStream.beginText();
-            contentStream.setFont(new PDType1Font((Standard14Fonts.FontName.HELVETICA_BOLD)), 20);
 
+            contentStream.setFont(new PDType1Font((Standard14Fonts.FontName.HELVETICA_BOLD)), 20);
             contentStream.newLineAtOffset(page.getMediaBox().getWidth() / 1000 * 120,  page.getMediaBox().getHeight() / 1000 * 591);
             contentStream.showText("Rechnung Nr. 12345");
 
+            contentStream.setFont(new PDType1Font((Standard14Fonts.FontName.HELVETICA)), 10);
+            contentStream.newLineAtOffset(0,  -(page.getMediaBox().getHeight() / 1000 * 33));
+            contentStream.showText("Ich bedanke mich für die gute Zusammenarbeit und stelle Ihnen vereinbarungsgemäß folgende");
+
+            contentStream.newLineAtOffset(0,  -(page.getMediaBox().getHeight() / 1000 * 13));
+            contentStream.showText("Leistungen in Rechnung:");
+
             contentStream.endText();
 
-
-        //Referenzzeile data
+//HorizontalLine
             contentStream.beginText();
-
-            //Leistungsdatumheader
-
-
-            //Rechnungsdatumheader
-            contentStream.newLineAtOffset(page.getMediaBox().getWidth() / 1000 * 159,  0);
-            contentStream.showText("TT.MM.JJJJ");
-
+            contentStream.newLineAtOffset(page.getMediaBox().getWidth() / 1000 * 120,  page.getMediaBox().getHeight() / 1000 * 522);
+            contentStream.showText("__________________________________________________________________________________");
             contentStream.endText();
 
 
+
+
+            //HorizontalLine
+            contentStream.beginText();
+            contentStream.setFont(new PDType1Font((Standard14Fonts.FontName.HELVETICA_BOLD)), 10);
+            contentStream.newLineAtOffset(page.getMediaBox().getWidth() / 1000 * 120,  page.getMediaBox().getHeight() / 1000 * 485);
+            contentStream.showText("__________________________________________________________________________________");
+            contentStream.endText();
 
 
             contentStream.close();
