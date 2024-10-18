@@ -12,12 +12,12 @@ import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Iterator;
 
 
 public class InvoiceGenerator {
     static final float WIDTH = 595.27563f;
     static final float HEIGHT = 841.8898f;
+    static final PDType1Font FONT = new PDType1Font(Standard14Fonts.FontName.HELVETICA);
 
     static String filepath = "";
     static PDDocument document;
@@ -31,8 +31,8 @@ public class InvoiceGenerator {
             printLogo("X:\\invoice-maker\\src\\main\\resources\\logo1.PNG"/*replace when user class exists*/,
                     new Point(380, 715));
             printAdressField(
-                    new Adress("Company", "First", "Last", "Street", "City"),
-                    new Adress("Anita", "Pacholik", "Friedo", "Berlin"));
+                    new Address("Company", "First", "Last", "Street", "City"),
+                    new Address("Anita", "Pacholik", "Friedo", "Berlin"));
 
 
 
@@ -265,7 +265,7 @@ public class InvoiceGenerator {
         contentStream.drawImage(pdImage, position.x, position.y);
     }
 
-    private static class AdressField {
+    private static class AddressField {
         static final float POSITION_X = 70.8661f;
         static final float POSITION_Y = 714.331f;
         static final float WIDTH = 226.772f;
@@ -273,32 +273,34 @@ public class InvoiceGenerator {
         static final int FONT_SIZE_SENDER = 8;
         static final int FONT_SIZE_RECEIVER_COMPANY = 11;
         static final int FONT_SIZE_RECEIVER = 10;
+        static Address sender;
+        static Address recipient;
 
-        static Adress sender;
-        static Adress recipient;
-
-        private static void print()
+        private static void print(Address sender, Address recipient)
                 throws IOException {
+            AddressField.sender = sender;
+            AddressField.recipient = recipient;
             setPosition(POSITION_X, POSITION_Y);
-            printAddress();
+            printAddress(sender, recipient);
             contentStream.endText();
         }
 
         private static void printAddress() {
             verticalAlignCenter();
-            printSender(sender);
-            printRecipient(recipient);
+            printSender();
+            printRecipient();
         }
 
         private static void verticalAlignCenter() {
-            formatSenderAdress();
+            ArrayList<String> formattedSenderAdress = formatSenderAdress();
             formatRecipientAdress();
             int y = calculateOffset();
             contentStream.newLineAtOffset(0, y);
         }
 
-        private static String formatSenderAdress() {
+        private static ArrayList<String> formatSenderAdress() throws IOException {
             StringBuilder senderAdressLine = new StringBuilder();
+
             ArrayList<String> items = sender.getItems();
             for (int i = 0; i + 1 < items.size(); i++) {
                 if (items.get(i).isEmpty()) {
@@ -308,6 +310,11 @@ public class InvoiceGenerator {
                 senderAdressLine.append(" | ");
             }
             senderAdressLine.append(items.getLast());
+
+            contentStream.setFont(FONT, AddressField.FONT_SIZE_SENDER);
+            float textWidth = FONT.getStringWidth(senderAdressLine.toString()) / 1000.0f * FONT_SIZE_SENDER;
+            if (
+
         }
 
     }
@@ -374,7 +381,7 @@ public class InvoiceGenerator {
 
 
 
-    private void printSender(Adress sender) {
+    private void printSender(Address sender) {
         setPosition();
     }
 

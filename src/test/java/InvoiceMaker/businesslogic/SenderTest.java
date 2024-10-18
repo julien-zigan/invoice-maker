@@ -3,18 +3,16 @@ package InvoiceMaker.businesslogic;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.Iterator;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 class SenderTest {
-    Adress company;
-    Adress simpleSender;
+    Address company;
+    Address simpleSender;
 
     @BeforeEach
     void setUpTestSenders() {
-        company = new Adress("Company", "FnameC", "LnameC", "StreetC", "CityC");
-        simpleSender = new Adress("Fname", "Lname", "Street", "City");
+        company = new Address("Company", "FnameC", "LnameC", "StreetC", "CityC");
+        simpleSender = new Address("Fname", "Lname", "Street", "City");
     }
 
     @Test

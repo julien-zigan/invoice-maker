@@ -2,7 +2,7 @@ package InvoiceMaker.businesslogic;
 
 import java.util.ArrayList;
 
-public class Adress {
+public class Address {
     private ArrayList<String> items;
     private String company;
     private String firstName;
@@ -10,7 +10,7 @@ public class Adress {
     private String street;
     private String city;
 
-    public Adress(
+    public Address(
             String firstName,
             String lastName,
             String street,
@@ -19,7 +19,7 @@ public class Adress {
         this("", firstName, lastName, street, city);
     }
 
-    public Adress(
+    public Address(
             String company,
             String firstName,
             String lastName,
