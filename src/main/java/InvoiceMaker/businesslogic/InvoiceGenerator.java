@@ -28,9 +28,9 @@ public class InvoiceGenerator {
 
         try {
             setUpDocument();
-            addLogo("X:\\invoice-maker\\src\\main\\resources\\logo1.PNG"/*replace when user class exists*/,
+            printLogo("X:\\invoice-maker\\src\\main\\resources\\logo1.PNG"/*replace when user class exists*/,
                     new Point(380, 715));
-            addAdressField(contentStream,
+            printAdressField(
                     new Adress("Company", "First", "Last", "Street", "City"),
                     new Adress("Anita", "Pacholik", "Friedo", "Berlin"));
 
@@ -255,41 +255,82 @@ public class InvoiceGenerator {
     private static void setFoldMark() {
     }
 
-    private static void addLogo(String filepath, Point position) throws IOException {
+    private static void setPosition(float x, float y) throws IOException {
+        contentStream.beginText();
+        contentStream.newLineAtOffset(x, y);
+    }
+
+    private static void printLogo(String filepath, Point position) throws IOException {
         PDImageXObject pdImage = PDImageXObject.createFromFile(filepath, document);
         contentStream.drawImage(pdImage, position.x, position.y);
     }
 
-    private static void addAdressField(
-            PDPageContentStream contentStream, Adress recipient, Adress sender
-    )
-            throws IOException {
-        final float POSITION_X = 70.8661f;
-        final float POSITION_Y = 714.331f;
-        final float WIDTH = 226.772f;
-        final float HEIGHT = 127.559f;
+    private static class AdressField {
+        static final float POSITION_X = 70.8661f;
+        static final float POSITION_Y = 714.331f;
+        static final float WIDTH = 226.772f;
+        static final float HEIGHT = 127.559f;
+        static final int FONT_SIZE_SENDER = 8;
+        static final int FONT_SIZE_RECEIVER_COMPANY = 11;
+        static final int FONT_SIZE_RECEIVER = 10;
 
-        contentStream.beginText();
-        contentStream.newLineAtOffset(POSITION_X, POSITION_Y);
+        static Adress sender;
+        static Adress recipient;
 
+        private static void print()
+                throws IOException {
+            setPosition(POSITION_X, POSITION_Y);
+            printAddress();
+            contentStream.endText();
+        }
+
+        private static void printAddress() {
+            verticalAlignCenter();
+            printSender(sender);
+            printRecipient(recipient);
+        }
+
+        private static void verticalAlignCenter() {
+            formatSenderAdress();
+            formatRecipientAdress();
+            int y = calculateOffset();
+            contentStream.newLineAtOffset(0, y);
+        }
+
+        private static String formatSenderAdress() {
+            StringBuilder senderAdressLine = new StringBuilder();
+            ArrayList<String> items = sender.getItems();
+            for (int i = 0; i + 1 < items.size(); i++) {
+                if (items.get(i).isEmpty()) {
+                    continue;
+                }
+                senderAdressLine.append(items.get(i));
+                senderAdressLine.append(" | ");
+            }
+            senderAdressLine.append(items.getLast());
+        }
+
+    }
+
+
+////////////////////////////////////////////////////////////////////////////////
         ///////////////SenderField////////////
-        StringBuilder joinedAdress = new StringBuilder();
-        ArrayList<String> items = sender.getItems();
+
 
         for (int i = 0; i + 1 < items.size(); i++) {
             if (items.get(i).isEmpty()) {
                 continue;
             }
-            joinedAdress.append(items.get(i));
-            joinedAdress.append(" | ");
+            recipientAdressLine.append(items.get(i));
+            recipientAdressLine.append(" | ");
         }
-        joinedAdress.append(items.getLast());
+        recipientAdressLine.append(items.getLast());
 
         PDType1Font normalFont = new PDType1Font(Standard14Fonts.FontName.HELVETICA);
         PDType1Font boldFont = new PDType1Font(Standard14Fonts.FontName.HELVETICA_BOLD);
 
         contentStream.setFont(normalFont, 8);
-        float textWidth = normalFont.getStringWidth(joinedAdress.toString()) / 1000.0f * 8;
+        float textWidth = normalFont.getStringWidth(recipientAdressLine.toString()) / 1000.0f * 8;
 
         float totalHeight = 0;
 
@@ -309,7 +350,7 @@ public class InvoiceGenerator {
 
         contentStream.newLineAtOffset(0, startOffsetY - 8);
         contentStream.setNonStrokingColor(0.47f, 0.47f, 0.47f);
-        contentStream.showText(joinedAdress.toString());
+        contentStream.showText(recipientAdressLine.toString());
         contentStream.setNonStrokingColor(0f, 0f, 0f);
 
         contentStream.setFont(boldFont, 11);
@@ -326,6 +367,15 @@ public class InvoiceGenerator {
         }
 
         contentStream.endText();
+    }
+
+
+
+
+
+
+    private void printSender(Adress sender) {
+        setPosition();
     }
 
 //    public static void main(String[] args) {
