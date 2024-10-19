@@ -253,6 +253,7 @@ public class InvoiceGenerator {
     }
 
     private static void setFoldMark() {
+
     }
 
     private static void setPosition(float x, float y) throws IOException {
@@ -313,7 +314,7 @@ public class InvoiceGenerator {
 
             contentStream.setFont(FONT, AddressField.FONT_SIZE_SENDER);
             float textWidth = FONT.getStringWidth(senderAdressLine.toString()) / 1000.0f * FONT_SIZE_SENDER;
-            if (
+          //  if (
 
         }
 
