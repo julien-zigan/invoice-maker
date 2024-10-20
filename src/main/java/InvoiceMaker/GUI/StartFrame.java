@@ -1,5 +1,8 @@
 package InvoiceMaker.GUI;
 
+import org.apache.pdfbox.Loader;
+import org.apache.pdfbox.pdmodel.PDDocument;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.datatransfer.DataFlavor;
@@ -50,7 +53,9 @@ public class StartFrame extends JFrame {
                             try {
                                 java.util.List<File> files = (List) tf.getTransferData(flavor);
                                 for (File file : files) {
-                                    new EditorFrame(file);
+                                    try(PDDocument document = Loader.loadPDF(file);){
+                                        new EditorFrame(document);
+                                    }
                                 }
                             } catch (UnsupportedFlavorException | IOException e) {
                                 throw new RuntimeException(e);

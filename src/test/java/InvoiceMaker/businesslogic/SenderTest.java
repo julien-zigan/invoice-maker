@@ -1,5 +1,6 @@
 package InvoiceMaker.businesslogic;
 
+import InvoiceMaker.businesslogic.Contacts.Address;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -11,8 +12,8 @@ class SenderTest {
 
     @BeforeEach
     void setUpTestSenders() {
-        company = new Address("Company", "FnameC", "LnameC", "StreetC", "CityC");
-        simpleSender = new Address("Fname", "Lname", "Street", "City");
+        company = new Address("Company", "FnameC", "LnameC", "11111", "StreetC", "CityC");
+        simpleSender = new Address("Fname", "Lname", "Street", "11111", "City");
     }
 
     @Test
@@ -23,13 +24,15 @@ class SenderTest {
         assertEquals("FnameC", company.getFirstName(), msg);
         assertEquals("LnameC", company.getLastName(), msg);
         assertEquals("StreetC", company.getStreet(), msg);
-        assertEquals("CityC", company.getCity(), msg);
+        assertEquals("11111", company.getZipCode(), msg);
+        assertEquals("CityC", company.getZipAndCity(), msg);
 
         assertTrue(simpleSender.getCompany().isEmpty(), msg);
         assertEquals("Fname", simpleSender.getFirstName(), msg);
         assertEquals("Lname", simpleSender.getLastName(), msg);
         assertEquals("Street", simpleSender.getStreet(), msg);
-        assertEquals("City", simpleSender.getCity(), msg);
+        assertEquals("11111", simpleSender.getZipCode(), msg);
+        assertEquals("City", simpleSender.getZipAndCity(), msg);
     }
 
     @Test
@@ -41,14 +44,16 @@ class SenderTest {
         company.setFirstName(compSet);
         company.setLastName(compSet);
         company.setStreet(compSet);
-        company.setCity(compSet);
+        company.setZipCode(compSet);
+        company.setZipAndCity(compSet);
         assertEquals(compSet, company.getCompany(), msg);
         assertEquals(compSet, company.getFirstName(), msg);
         assertEquals(compSet, company.getLastName(), msg);
         assertEquals(compSet, company.getStreet(), msg);
-        assertEquals(compSet, company.getCity(), msg);
+        assertEquals(compSet, company.getZipCode(), msg);
+        assertEquals(compSet, company.getZipAndCity(), msg);
 
-        assertEquals(5, company.getItems().size());
+        assertEquals(6, company.getItems().size());
         for (String string : company.getItems()) {
             assertEquals(compSet, string);
         }
@@ -57,12 +62,14 @@ class SenderTest {
         simpleSender.setFirstName(compSet);
         simpleSender.setLastName(compSet);
         simpleSender.setStreet(compSet);
-        simpleSender.setCity(compSet);
+        simpleSender.setZipCode(compSet);
+        simpleSender.setZipAndCity(compSet);
         assertEquals(compSet, simpleSender.getCompany(), msg);
         assertEquals(compSet, simpleSender.getFirstName(), msg);
         assertEquals(compSet, simpleSender.getLastName(), msg);
         assertEquals(compSet, simpleSender.getStreet(), msg);
-        assertEquals(compSet, simpleSender.getCity(), msg);
+        assertEquals(compSet, simpleSender.getZipCode(), msg);
+        assertEquals(compSet, simpleSender.getZipAndCity(), msg);
     }
 
 }

@@ -1,8 +1,11 @@
 package InvoiceMaker.GUI;
 
+import InvoiceMaker.businesslogic.Deployment;
 import InvoiceMaker.businesslogic.Einsatzbestaetigung;
 import InvoiceMaker.businesslogic.EinsatzbestaetigungBuilder;
-import InvoiceMaker.businesslogic.InvoiceGenerator;
+//import InvoiceMaker.businesslogic.InvoiceGenerator;
+import InvoiceMaker.businesslogic.InvoiceCreator;
+import InvoiceMaker.businesslogic.DeploymentBuilder;
 import org.apache.pdfbox.Loader;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.rendering.PDFRenderer;
@@ -18,7 +21,7 @@ import java.io.IOException;
 public class EditorFrame extends JFrame {
 
 
-    public EditorFrame(File deploymentConfirmationPDF) throws IOException {
+    public EditorFrame(PDDocument document) throws IOException {
         super("GDD Rechnung erstellen");
 
         setExtendedState(JFrame.MAXIMIZED_BOTH);
@@ -33,40 +36,37 @@ public class EditorFrame extends JFrame {
         gbc.gridx = 0;
         gbc.gridy = 0;
         gbc.weightx = 0.4;
-        add(new ConfirmationPanel(deploymentConfirmationPDF));
+        add(new ConfirmationPanel(document));
 
         // Control Panel
         gbc.gridx = 0;
         gbc.gridy = 0;
         gbc.weightx = 0.2;
-        add(new ControlPanel(deploymentConfirmationPDF));
+        add(new ControlPanel(document));
 
         // Invoice View
         gbc.gridx = 2;
         gbc.gridy = 0;
         gbc.weightx = 0.4;
-        add(new InvoicePanel(deploymentConfirmationPDF));
+
+        Deployment d = DeploymentBuilder.build(document);
+        add(new InvoicePanel(InvoiceCreator.generateDocument(d)));
 
 
         setVisible(true);
     }
 
     private class ConfirmationPanel extends JPanel {
-        private ConfirmationPanel(File deploymentConfirmationPDF) throws IOException {
-            try (PDDocument document = Loader.loadPDF(deploymentConfirmationPDF)){
+        private ConfirmationPanel(PDDocument document) throws IOException {
                 PDFRenderer pdfRenderer = new PDFRenderer(document);
                 BufferedImage pageImage = pdfRenderer.renderImage(0); // Render first page
                 JLabel label = new JLabel(new ImageIcon(pageImage));
                 add(label);
-
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
         }
     }
 
     private class ControlPanel extends JPanel {
-        private ControlPanel (File deploymentConfirmationPDF) {
+        private ControlPanel (PDDocument document) {
             setLayout(new GridLayout(6, 0, 50, 50));
 
             JButton editBtn = new JButton("Daten korrigieren");
@@ -108,7 +108,11 @@ public class EditorFrame extends JFrame {
             saveBtn.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    InvoiceGenerator.generateFinal(InvoicePanel.eb);
+                    try {
+                        document.save("X:\\Einsatzverwaltung\\Einsatzverwaltung\\target\\generated-sources\\output\\testFile1.pdf");
+                    } catch (IOException ex) {
+                        throw new RuntimeException(ex);
+                    }
                 }
             });
             add(saveBtn);
@@ -122,13 +126,9 @@ public class EditorFrame extends JFrame {
     private class InvoicePanel extends JPanel {
         static Einsatzbestaetigung eb;
 
-        private InvoicePanel(File deploymentConfirmationPDF) throws IOException {
+        private InvoicePanel(PDDocument document) throws IOException {
             try {
-                eb = EinsatzbestaetigungBuilder.build(deploymentConfirmationPDF);
-                String filepath = InvoiceGenerator.generate(eb);
-                File file = new File(filepath);
-                PDDocument doc = Loader.loadPDF(file);
-                PDFRenderer pdfRenderer = new PDFRenderer(doc);
+                PDFRenderer pdfRenderer = new PDFRenderer(document);
                 BufferedImage pageImage = pdfRenderer.renderImage(0); // Render first page
                 JLabel label = new JLabel(new ImageIcon(pageImage));
                 add(label);

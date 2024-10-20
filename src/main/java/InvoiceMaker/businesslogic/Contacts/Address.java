@@ -1,4 +1,4 @@
-package InvoiceMaker.businesslogic;
+package InvoiceMaker.businesslogic.Contacts;
 
 import java.util.ArrayList;
 
@@ -8,15 +8,15 @@ public class Address {
     private String firstName;
     private String lastName;
     private String street;
-    private String city;
+    private String zipAndCity;
 
     public Address(
             String firstName,
             String lastName,
             String street,
-            String city
+            String zipAndCity
     ) {
-        this("", firstName, lastName, street, city);
+        this("", firstName, lastName, street, zipAndCity);
     }
 
     public Address(
@@ -24,19 +24,19 @@ public class Address {
             String firstName,
             String lastName,
             String street,
-            String city
+            String zipAndCity
     ) {
         this.company = company;
         this.firstName = firstName;
         this.lastName = lastName;
         this.street = street;
-        this.city = city;
+        this.zipAndCity = zipAndCity;
         items = new ArrayList<>();
         items.add(company);
         items.add(firstName);
         items.add(lastName);
         items.add(street);
-        items.add(city);
+        items.add(zipAndCity);
 
     }
 
@@ -76,13 +76,14 @@ public class Address {
         items.set(3, street);
     }
 
-    public String getCity() {
-        return city;
+
+    public String getZipAndCity() {
+        return zipAndCity;
     }
 
-    public void setCity(String city) {
-        this.city = city;
-        items.set(4, city);
+    public void setZipAndCity(String zipAndCity) {
+        this.zipAndCity = zipAndCity;
+        items.set(4, zipAndCity);
     }
 
     public ArrayList<String> getItems() {
