@@ -8,10 +8,11 @@ import java.sql.*;
 
 public class Main {
     public static Address user;
+
     public static void main(String[] args) {
 
         try {
-            String url = "jdbc:sqlite:firstdraft.db";
+            String url = "jdbc:sqlite:seconddraft.db";
             Connection connection = DriverManager.getConnection(url);
             Statement statement = connection.createStatement();
             String sql = """

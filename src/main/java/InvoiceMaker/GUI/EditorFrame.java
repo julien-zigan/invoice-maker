@@ -54,7 +54,7 @@ public class EditorFrame extends JFrame {
             logIn.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    new LogIn();
+                    new LogIn(new JPanel());
                 }
             });
             currentUser.add(logIn);

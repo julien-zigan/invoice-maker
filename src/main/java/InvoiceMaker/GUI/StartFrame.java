@@ -1,7 +1,6 @@
 package InvoiceMaker.GUI;
 
 import InvoiceMaker.Main;
-import InvoiceMaker.businesslogic.Contacts.Address;
 import InvoiceMaker.businesslogic.LogIn;
 import org.apache.pdfbox.Loader;
 import org.apache.pdfbox.pdmodel.PDDocument;
@@ -58,7 +57,7 @@ public class StartFrame extends JFrame {
                             try {
                                 java.util.List<File> files = (List) tf.getTransferData(flavor);
                                 for (File file : files) {
-                                    try(PDDocument document = Loader.loadPDF(file);){
+                                    try(PDDocument document = Loader.loadPDF(file)) {
                                         new EditorFrame(document);
                                     }
                                 }
@@ -98,7 +97,7 @@ public class StartFrame extends JFrame {
             logIn.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    new LogIn();
+                    new LogIn(currentUser);
                 }
             });
             currentUser.add(logIn);

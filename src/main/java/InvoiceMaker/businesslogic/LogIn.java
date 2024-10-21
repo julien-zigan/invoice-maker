@@ -1,5 +1,7 @@
 package InvoiceMaker.businesslogic;
 
+import InvoiceMaker.GUI.StartFrame;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -16,7 +18,7 @@ public class LogIn extends JDialog {
     int NUM_OF_FIELDS = 8;
     int FIELDHEIGHT = HEIGHT / (NUM_OF_FIELDS - 1)  / 3;
 
-    public LogIn() {
+    public LogIn(JPanel currentUser) {
         setTitle("Anmelden");
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setSize(WIDTH, HEIGHT);
@@ -70,24 +72,27 @@ public class LogIn extends JDialog {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
-                    String company = companyInput.getText();
-                    String firstName = firstNameInput.getText();
-                    String lastName = lastNameInput.getText();
-                    String street = streetInput.getText();
-                    String zipAndCity = zipAndCityInput.getText();
                     int permLog = stayLoggedIn.isSelected() ? 1 : 0;
-                    String url = "jdbc:sqlite:firstdraft.db";
+                    String url = "jdbc:sqlite:seconddraft.db";
                     Connection connection = DriverManager.getConnection(url);
                     Statement statement = connection.createStatement();
                     String sql = """
                             insert into users (company, firstName, LastName, street, zipAndCity, loggedIn)
-                            values (%s, %s, %s, %s, %s, %d)
-                            """.formatted(company, firstName, lastName, street, zipAndCity, permLog);
+                            values ("%s", "%s", "%s", "%s", "%s", "%d")
+                            """.formatted(companyInput.getText(),
+                            firstNameInput.getText(),
+                            lastNameInput.getText(),
+                            streetInput.getText(),
+                            zipAndCityInput.getText(),
+                            permLog);
                     statement.executeUpdate(sql);
 
                 } catch (SQLException se) {
-                    System.err.println(se.getMessage());
+                    System.err.println(se.getMessage() + "ERE AM I");
                 }
+                currentUser.repaint();
+                setVisible(false);
+                dispose();
             }
 
         });
@@ -99,7 +104,7 @@ public class LogIn extends JDialog {
         setVisible(true);
 
         try {
-            String url = "jdbc:sqlite:firstdraft.db";
+            String url = "jdbc:sqlite:seconddraft.db";
             Connection connection = DriverManager.getConnection(url);
             Statement statement = connection.createStatement();
             String sql = """
