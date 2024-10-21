@@ -1,12 +1,6 @@
 package InvoiceMaker.GUI;
 
-import InvoiceMaker.businesslogic.Deployment;
-import InvoiceMaker.businesslogic.Einsatzbestaetigung;
-import InvoiceMaker.businesslogic.EinsatzbestaetigungBuilder;
-//import InvoiceMaker.businesslogic.InvoiceGenerator;
-import InvoiceMaker.businesslogic.InvoiceCreator;
-import InvoiceMaker.businesslogic.DeploymentBuilder;
-import org.apache.pdfbox.Loader;
+import InvoiceMaker.businesslogic.*;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.rendering.PDFRenderer;
 
@@ -15,7 +9,6 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
 
 public class EditorFrame extends JFrame {
@@ -23,35 +16,19 @@ public class EditorFrame extends JFrame {
 
     public EditorFrame(PDDocument document) throws IOException {
         super("GDD Rechnung erstellen");
-
         setExtendedState(JFrame.MAXIMIZED_BOTH);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        GridBagConstraints gbc = initGridBag(this, 5, 6, 20, 5);
 
-        // Layout
-        setLayout(new GridBagLayout());
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(5, 20, 5, 20);
-
-        // First Column = Deployment Confirmation View
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        gbc.weightx = 0.4;
+        setConstraints(gbc, 0, 0, 0.4);
         add(new ConfirmationPanel(document));
 
-        // Control Panel
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        gbc.weightx = 0.2;
+        setConstraints(gbc, 0, 0, 0.2);
         add(new ControlPanel(document));
 
-        // Invoice View
-        gbc.gridx = 2;
-        gbc.gridy = 0;
-        gbc.weightx = 0.4;
-
+        setConstraints(gbc, 2, 0, 0.4);
         Deployment d = DeploymentBuilder.build(document);
         add(new InvoicePanel(InvoiceCreator.generateDocument(d)));
-
 
         setVisible(true);
     }
@@ -67,7 +44,21 @@ public class EditorFrame extends JFrame {
 
     private class ControlPanel extends JPanel {
         private ControlPanel (PDDocument document) {
-            setLayout(new GridLayout(6, 0, 50, 50));
+            setLayout(new GridLayout(7, 0, 50, 50));
+
+
+            JPanel currentUser = new JPanel(new GridLayout(2, 0));
+            JLabel showUser = new JLabel("Bitte melden Sie sich an!");
+            currentUser.add(showUser);
+            JButton logIn = new JButton("Anmelden");
+            logIn.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    new LogIn();
+                }
+            });
+            currentUser.add(logIn);
+            add(currentUser);
 
             JButton editBtn = new JButton("Daten korrigieren");
             add(editBtn);
@@ -137,5 +128,18 @@ public class EditorFrame extends JFrame {
                 e.printStackTrace();
             }
         }
+    }
+
+    private GridBagConstraints initGridBag(EditorFrame frame, int top, int left, int bottom, int right) {
+        frame.setLayout(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(top, left, bottom, right);
+        return gbc;
+    }
+
+    private void setConstraints(GridBagConstraints gbc, int gridx, int gridy, double weightx) {
+        gbc.gridx = gridx;
+        gbc.gridy = gridy;
+        gbc.weightx = weightx;
     }
 }

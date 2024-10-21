@@ -1,5 +1,6 @@
 package InvoiceMaker.GUI;
 
+import InvoiceMaker.businesslogic.LogIn;
 import org.apache.pdfbox.Loader;
 import org.apache.pdfbox.pdmodel.PDDocument;
 
@@ -9,6 +10,8 @@ import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.dnd.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
@@ -42,7 +45,6 @@ public class StartFrame extends JFrame {
                     setBackground(Color.LIGHT_GRAY);
                 }
 
-                    // get the file, transfer it to newly opende editor frame and close self afterwards
                 @Override
                 public void drop(DropTargetDropEvent dtde) {
                     dtde.acceptDrop(DnDConstants.ACTION_COPY);
@@ -62,7 +64,6 @@ public class StartFrame extends JFrame {
                             }
                         }
                     }
-
                     setVisible(false);
                     dispose();
                 }
@@ -75,6 +76,19 @@ public class StartFrame extends JFrame {
             };
 
             DropTarget dropTarget = new DropTarget(this, dropTargetListener);
+
+            JPanel currentUser = new JPanel(new GridLayout(2, 0));
+            JLabel showUser = new JLabel("Bitte melden Sie sich an!");
+            currentUser.add(showUser);
+            JButton logIn = new JButton("Anmelden");
+            logIn.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    new LogIn();
+                }
+            });
+            currentUser.add(logIn);
+            add(currentUser);
         }
     }
 

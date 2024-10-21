@@ -1,4 +1,4 @@
-package InvoiceMaker.businesslogic.LetterRegions;
+package InvoiceMaker.businesslogic.LetterTypeA;
 
 import InvoiceMaker.businesslogic.Contacts.Address;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
@@ -13,7 +13,7 @@ import java.util.ArrayList;
 
 public class ReturnInformation {
     static final float POS_X = 85.0394f;
-    static final float POS_Y = 714.3308f;
+    static final float POS_Y = 765.3544f;
     static final float HEIGHT = 50.17323f;
     static final float WIDTH = 226.772f;
     static final float LINEHEIGHT = 10.034646f;
@@ -42,6 +42,7 @@ public class ReturnInformation {
             sb.append(items.get(i));
             sb.append(" | ");
         }
+        sb.append(items.getLast());
         return sb.toString();
     }
 }

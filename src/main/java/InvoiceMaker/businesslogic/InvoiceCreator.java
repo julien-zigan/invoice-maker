@@ -1,6 +1,6 @@
 package InvoiceMaker.businesslogic;
 
-import InvoiceMaker.businesslogic.LetterRegions.ReturnInformation;
+import InvoiceMaker.businesslogic.LetterTypeA.ReturnInformation;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
@@ -14,8 +14,8 @@ public class InvoiceCreator {
         PDPage page = new PDPage(PDRectangle.A4);
         document.addPage(page);
         PDPageContentStream content = new PDPageContentStream(document, page);
-
         ReturnInformation.print(content, deployment.getContractor());
+        content.close();
         return document;
     }
 }

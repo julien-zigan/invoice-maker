@@ -10,6 +10,8 @@ import java.sql.Date;
 public class DeploymentBuilder {
     public static Deployment build(PDDocument doc) throws IOException {
         StringBuilder text = extractText(doc);
+
+
             //TODO for testing only!!!!!
         return new Deployment(new Address("Anita", "Pacholik", "Straße 13", "15021 Kölle"),
                 null, null, null, null, 0f, 0f, 0, 0);
