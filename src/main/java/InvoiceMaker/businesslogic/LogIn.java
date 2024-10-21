@@ -1,6 +1,7 @@
 package InvoiceMaker.businesslogic;
 
 import InvoiceMaker.GUI.StartFrame;
+import InvoiceMaker.businesslogic.Contacts.Address;
 
 import javax.swing.*;
 import java.awt.*;
@@ -17,6 +18,8 @@ public class LogIn extends JDialog {
     int X_OFFSET = 10;
     int NUM_OF_FIELDS = 8;
     int FIELDHEIGHT = HEIGHT / (NUM_OF_FIELDS - 1)  / 3;
+
+    public static Address currentUser;
 
     public LogIn(JPanel currentUser) {
         setTitle("Anmelden");

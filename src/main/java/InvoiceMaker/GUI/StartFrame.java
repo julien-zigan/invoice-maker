@@ -83,11 +83,11 @@ public class StartFrame extends JFrame {
             currentUser.setBounds(100, 200, 200, 50);
             String labelText = "Bitte melden Sie sich an!";
             String buttonText = "Anmelden";
-            if (Main.user != null) {
+            if (LogIn.currentUser != null) {
                 labelText = "Angemeldet:\n\n"
-                        + Main.user.getFirstName()
+                        + LogIn.currentUser.getFirstName()
                         + "\n"
-                        + Main.user.getLastName();
+                        + LogIn.currentUser.getLastName();
                 buttonText = "Abmelden";
             }
             JLabel showUser = new JLabel(labelText);
