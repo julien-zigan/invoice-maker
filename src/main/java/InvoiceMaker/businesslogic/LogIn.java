@@ -2,12 +2,18 @@ package InvoiceMaker.businesslogic;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.sql.Statement;
 
 public class LogIn extends JDialog {
     int WIDTH = 400;
     int HEIGHT = 300;
     int X_OFFSET = 10;
-    int NUM_OF_FIELDS = 6;
+    int NUM_OF_FIELDS = 8;
     int FIELDHEIGHT = HEIGHT / (NUM_OF_FIELDS - 1)  / 3;
 
     public LogIn() {
@@ -54,7 +60,62 @@ public class LogIn extends JDialog {
         zipAndCityInput.setBounds(WIDTH / 3 -X_OFFSET, HEIGHT / NUM_OF_FIELDS * 4 + FIELDHEIGHT, WIDTH * 2 / 3 - X_OFFSET, FIELDHEIGHT);
         panel.add(zipAndCityInput);
 
+        JCheckBox stayLoggedIn = new JCheckBox("Angemeldet bleiben?");
+        stayLoggedIn.setBounds(WIDTH / 4, HEIGHT / NUM_OF_FIELDS * 6, WIDTH / 2, HEIGHT / NUM_OF_FIELDS);
+        panel.add(stayLoggedIn);
+
+        JButton login = new JButton("Anmelden");
+        login.setBounds(WIDTH / 2 -(WIDTH / 3 - X_OFFSET)/2, HEIGHT / NUM_OF_FIELDS * 5, WIDTH / 3 - X_OFFSET, HEIGHT / NUM_OF_FIELDS);
+        login.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    String company = companyInput.getText();
+                    String firstName = firstNameInput.getText();
+                    String lastName = lastNameInput.getText();
+                    String street = streetInput.getText();
+                    String zipAndCity = zipAndCityInput.getText();
+                    int permLog = stayLoggedIn.isSelected() ? 1 : 0;
+                    String url = "jdbc:sqlite:firstdraft.db";
+                    Connection connection = DriverManager.getConnection(url);
+                    Statement statement = connection.createStatement();
+                    String sql = """
+                            insert into users (company, firstName, LastName, street, zipAndCity, loggedIn)
+                            values (%s, %s, %s, %s, %s, %d)
+                            """.formatted(company, firstName, lastName, street, zipAndCity, permLog);
+                    statement.executeUpdate(sql);
+
+                } catch (SQLException se) {
+                    System.err.println(se.getMessage());
+                }
+            }
+
+        });
+        panel.add(login);
+
+
+
         add(panel);
         setVisible(true);
+
+        try {
+            String url = "jdbc:sqlite:firstdraft.db";
+            Connection connection = DriverManager.getConnection(url);
+            Statement statement = connection.createStatement();
+            String sql = """
+                            create table if not exists users (
+                                id integer primary key,
+                                company text,
+                                firstName text,
+                                lastName text,
+                                street text,
+                                zipAndCity text,
+                                loggedIn integer)
+                            """;
+            statement.executeUpdate(sql);
+
+        } catch (SQLException se) {
+            System.err.println(se.getMessage());
+        }
     }
 }

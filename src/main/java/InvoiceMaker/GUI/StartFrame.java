@@ -1,5 +1,7 @@
 package InvoiceMaker.GUI;
 
+import InvoiceMaker.Main;
+import InvoiceMaker.businesslogic.Contacts.Address;
 import InvoiceMaker.businesslogic.LogIn;
 import org.apache.pdfbox.Loader;
 import org.apache.pdfbox.pdmodel.PDDocument;
@@ -25,15 +27,16 @@ public class StartFrame extends JFrame {
         setLocationRelativeTo(null);
         setLayout(new BorderLayout());
         add(new DropPanel(), BorderLayout.CENTER);
-
         setVisible(true);
     }
 
     private class DropPanel extends JPanel {
         private DropPanel() {
             setBackground(Color.LIGHT_GRAY);
-            setLayout(new BorderLayout());
-            add(new DropLabel(), BorderLayout.CENTER);
+            setLayout(null);
+            DropLabel dl = new DropLabel();
+            dl.setBounds(40, 50, 300, 100);
+            add(dl);
             DropTargetListener dropTargetListener = new DropTargetListener() {
                 @Override
                 public void dragEnter(DropTargetDragEvent dtde) {
@@ -78,9 +81,20 @@ public class StartFrame extends JFrame {
             DropTarget dropTarget = new DropTarget(this, dropTargetListener);
 
             JPanel currentUser = new JPanel(new GridLayout(2, 0));
-            JLabel showUser = new JLabel("Bitte melden Sie sich an!");
+            currentUser.setBounds(100, 200, 200, 50);
+            String labelText = "Bitte melden Sie sich an!";
+            String buttonText = "Anmelden";
+            if (Main.user != null) {
+                labelText = "Angemeldet:\n\n"
+                        + Main.user.getFirstName()
+                        + "\n"
+                        + Main.user.getLastName();
+                buttonText = "Abmelden";
+            }
+            JLabel showUser = new JLabel(labelText);
             currentUser.add(showUser);
-            JButton logIn = new JButton("Anmelden");
+            JButton logIn = new JButton(buttonText);
+            logIn.setBounds(100, 100, 50, 75);
             logIn.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
